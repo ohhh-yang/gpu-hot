@@ -186,7 +186,8 @@ class GPUMonitor:
                                 'name': self._get_process_name(proc.pid),
                                 'gpu_uuid': uuid,
                                 'gpu_id': gpu_id,
-                                'memory': float(proc.usedGpuMemory / (1024 ** 2))
+                                # Check usedGpuMemory for None and set it to 0 if it is None
+                                'memory': float(0 if proc.usedGpuMemory is None else proc.usedGpuMemory / (1024 ** 2))
                             })
                     except pynvml.NVMLError:
                         pass

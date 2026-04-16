@@ -8,6 +8,7 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse, JSONResponse
 from core import config
+from pathlib import Path
 from version import __version__
 
 # Setup logging
@@ -54,9 +55,13 @@ else:
 @app.get("/")
 async def index():
     """Serve the main dashboard"""
-    with open("templates/index.html", "r") as f:
+    BASE_DIR = Path(__file__).resolve().parent
+    file_path = BASE_DIR / "templates" / "index.html"
+    if not file_path.exists():
+        return HTMLResponse(content="<h1>Error: templates/index.html not found</h1>", status_code=404)
+        
+    with open(file_path, "r", encoding='utf-8') as f:
         return HTMLResponse(content=f.read())
-
 
 @app.get("/api/gpu-data")
 async def api_gpu_data():
